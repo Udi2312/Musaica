@@ -1,4 +1,5 @@
-
+const { trimAudio, applyEffect } = require('../utils/audioProcessor');
+const path = require('path');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const Project = require('../models/Project');
@@ -132,3 +133,48 @@ exports.getProjects = async (req, res) => {
       });
     }
   };
+
+// Trim audio endpoint
+exports.trimAudio = async (req, res) => {
+  try {
+    const { filename, start, duration } = req.body;
+    const inputPath = path.join(__dirname, '../uploads', filename);
+    const outputPath = path.join(__dirname, '../processed', `trimmed_${filename}`);
+
+    await trimAudio(inputPath, outputPath, start, duration);
+    
+    // Update project with processed file
+    await Project.findOneAndUpdate(
+      { user: req.user._id, filename },
+      { $push: { processedFiles: { path: `trimmed_${filename}`, effect: 'trim' } } }
+    );
+
+    res.json({ success: true, processedFile: `trimmed_${filename}` });
+  } catch (err) {
+    console.error('Trim Error:', err);
+    res.status(500).json({ error: 'Audio trim failed', details: err.message });
+  }
+};
+
+// Apply effect endpoint
+exports.applyEffect = async (req, res) => {
+  try {
+    const { filename, effectType, value } = req.body;
+    const inputPath = path.join(__dirname, '../uploads', filename);
+    const outputFilename = `${effectType}_${value}_${filename}`;
+    const outputPath = path.join(__dirname, '../processed', outputFilename);
+
+    await applyEffect(inputPath, outputPath, effectType, value);
+    
+    // Update project
+    await Project.findOneAndUpdate(
+      { user: req.user._id, filename },
+      { $push: { processedFiles: { path: outputFilename, effect: effectType } } }
+    );
+
+    res.json({ success: true, processedFile: outputFilename });
+  } catch (err) {
+    console.error('Effect Error:', err);
+    res.status(500).json({ error: 'Effect failed', details: err.message });
+  }
+};
