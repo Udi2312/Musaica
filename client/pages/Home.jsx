@@ -7,7 +7,7 @@ function Home() {
   return (
     <div className="home-page dark-theme">
       <section className="hero">
-        <h1>SoundCraft Pro</h1>
+        <h1>MUSAICA</h1>
         <p>Your all-in-one audio engineering platform</p>
         <div className="cta-buttons">
           <button className="btn btn-primary" onClick={() => navigate('/editor')}>
