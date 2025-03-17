@@ -592,3 +592,20 @@
         gap: 1.5rem;
         grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     }
+
+    .side-panel {
+      width: 200px;
+      padding: 20px;
+      background-color: #f4f4f4;
+      border-right: 1px solid #ddd;
+    }
+    
+    .side-panel h3 {
+      margin-bottom: 20px;
+    }
+    
+    .side-panel .btn {
+      display: block;
+      width: 100%;
+      margin-bottom: 10px;
+    }

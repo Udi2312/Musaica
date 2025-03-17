@@ -66,46 +66,136 @@ function Waveform() {
   }, []);
   
   // Initialize audio effects
+  // const initAudioEffects = () => {
+  //   if (!wavesurferRef.current || !wavesurferRef.current.backend.ac) return;
+    
+  //   const audioContext = wavesurferRef.current.backend.ac;
+    
+  //   // Get the audio source node
+  //   const sourceNode = wavesurferRef.current.backend.source;
+    
+  //   // Create echo effect (delay)
+  //   const echoDelay = audioContext.createDelay(2.0);
+  //   echoDelay.delayTime.setValueAtTime(effects.echo.delayTime, audioContext.currentTime);
+    
+  //   const echoFeedback = audioContext.createGain();
+  //   echoFeedback.gain.value = effects.echo.feedback;
+    
+  //   // Create reverb effect
+  //   const reverb = audioContext.createConvolver();
+  //   createReverbImpulse(audioContext, reverb, effects.reverb.decay);
+    
+  //   // Create distortion effect
+  //   const distortion = audioContext.createWaveShaper();
+  //   distortion.oversample = '4x';
+  //   distortion.curve = createDistortionCurve(effects.distortion.amount);
+    
+  //   // Store nodes for later use
+  //   audioNodesRef.current = {
+  //     source: sourceNode,
+  //     echoDelay,
+  //     echoFeedback,
+  //     reverb,
+  //     distortion
+  //   };
+    
+  //   // Connect echo feedback loop
+  //   echoDelay.connect(echoFeedback);
+  //   echoFeedback.connect(echoDelay);
+    
+  //   // Apply current effect settings
+  //   applyEffects();
+  // };
   const initAudioEffects = () => {
-    if (!wavesurferRef.current || !wavesurferRef.current.backend.ac) return;
-    
-    const audioContext = wavesurferRef.current.backend.ac;
-    
-    // Get the audio source node
-    const sourceNode = wavesurferRef.current.backend.source;
-    
-    // Create echo effect (delay)
-    const echoDelay = audioContext.createDelay(2.0);
-    echoDelay.delayTime.setValueAtTime(effects.echo.delayTime, audioContext.currentTime);
-    
-    const echoFeedback = audioContext.createGain();
-    echoFeedback.gain.value = effects.echo.feedback;
-    
-    // Create reverb effect
-    const reverb = audioContext.createConvolver();
-    createReverbImpulse(audioContext, reverb, effects.reverb.decay);
-    
-    // Create distortion effect
-    const distortion = audioContext.createWaveShaper();
-    distortion.oversample = '4x';
-    distortion.curve = createDistortionCurve(effects.distortion.amount);
-    
-    // Store nodes for later use
-    audioNodesRef.current = {
-      source: sourceNode,
-      echoDelay,
-      echoFeedback,
-      reverb,
-      distortion
-    };
-    
-    // Connect echo feedback loop
-    echoDelay.connect(echoFeedback);
-    echoFeedback.connect(echoDelay);
-    
-    // Apply current effect settings
-    applyEffects();
+  if (!wavesurferRef.current || !wavesurferRef.current.backend.ac) return;
+
+  const audioContext = wavesurferRef.current.backend.ac;
+
+  // Get the audio source node
+  const sourceNode = wavesurferRef.current.backend.source;
+  if (!sourceNode) return;
+
+  // Create echo effect (delay)
+  const echoDelay = audioContext.createDelay(2.0);
+  echoDelay.delayTime.setValueAtTime(effects.echo.delayTime, audioContext.currentTime);
+
+  const echoFeedback = audioContext.createGain();
+  echoFeedback.gain.value = effects.echo.feedback;
+
+  // Create reverb effect
+  const reverb = audioContext.createConvolver();
+  createReverbImpulse(audioContext, reverb, effects.reverb.decay);
+
+  // Create distortion effect
+  const distortion = audioContext.createWaveShaper();
+  distortion.oversample = '4x';
+  distortion.curve = createDistortionCurve(effects.distortion.amount);
+
+  // Store nodes for later use
+  audioNodesRef.current = {
+    source: sourceNode,
+    echoDelay,
+    echoFeedback,
+    reverb,
+    distortion
   };
+
+  // Connect echo feedback loop
+  echoDelay.connect(echoFeedback);
+  echoFeedback.connect(echoDelay);
+
+  // Apply current effect settings
+  // applyEffects();
+  const applyEffects = () => {
+    if (!wavesurferRef.current || !audioNodesRef.current.source) return;
+  
+    const audioContext = wavesurferRef.current.backend.ac;
+    const { source, echoDelay, echoFeedback, reverb, distortion } = audioNodesRef.current;
+  
+    // Disconnect everything first
+    source.disconnect();
+    if (echoDelay) echoDelay.disconnect();
+    if (reverb) reverb.disconnect();
+    if (distortion) distortion.disconnect();
+  
+    // Create effect nodes chain
+    let currentNode = source;
+  
+    // Apply distortion if active
+    if (effects.distortion.active && distortion) {
+      currentNode.connect(distortion);
+      currentNode = distortion;
+    }
+  
+    // Apply echo if active
+    if (effects.echo.active && echoDelay) {
+      currentNode.connect(echoDelay);
+      currentNode.connect(audioContext.destination); // Direct sound
+      echoDelay.connect(audioContext.destination); // Delayed sound
+    } else {
+      // Apply reverb if active
+      if (effects.reverb.active && reverb) {
+        currentNode.connect(reverb);
+  
+        // Wet/dry mix for reverb
+        const dryGain = audioContext.createGain();
+        dryGain.gain.value = 1 - effects.reverb.mix;
+  
+        const wetGain = audioContext.createGain();
+        wetGain.gain.value = effects.reverb.mix;
+  
+        currentNode.connect(dryGain);
+        reverb.connect(wetGain);
+  
+        dryGain.connect(audioContext.destination);
+        wetGain.connect(audioContext.destination);
+      } else {
+        // No effects, direct connection
+        currentNode.connect(audioContext.destination);
+      }
+    }
+  };
+};
   
   // Create reverb impulse response
   const createReverbImpulse = (audioContext, convolverNode, decay = 2) => {
@@ -205,6 +295,41 @@ function Waveform() {
   };
   
   // Update effect parameters
+  // const updateEffectParam = (effectName, paramName, value) => {
+  //   setEffects(prev => {
+  //     const newEffects = {
+  //       ...prev,
+  //       [effectName]: {
+  //         ...prev[effectName],
+  //         [paramName]: value
+  //       }
+  //     };
+      
+  //     // Update the actual audio node parameters
+  //     if (audioNodesRef.current) {
+  //       if (effectName === 'echo') {
+  //         if (paramName === 'delayTime') {
+  //           audioNodesRef.current.echoDelay.delayTime.setValueAtTime(value, wavesurferRef.current.backend.ac.currentTime);
+  //         } else if (paramName === 'feedback') {
+  //           audioNodesRef.current.echoFeedback.gain.value = value;
+  //         }
+  //       } else if (effectName === 'distortion' && paramName === 'amount') {
+  //         audioNodesRef.current.distortion.curve = createDistortionCurve(value);
+  //       } else if (effectName === 'reverb' && paramName === 'decay') {
+  //         // Regenerate impulse response for new decay value
+  //         if (wavesurferRef.current && wavesurferRef.current.backend.ac) {
+  //           createReverbImpulse(
+  //             wavesurferRef.current.backend.ac, 
+  //             audioNodesRef.current.reverb, 
+  //             value
+  //           );
+  //         }
+  //       }
+  //     }
+      
+  //     return newEffects;
+  //   });
+  // };
   const updateEffectParam = (effectName, paramName, value) => {
     setEffects(prev => {
       const newEffects = {
@@ -214,18 +339,18 @@ function Waveform() {
           [paramName]: value
         }
       };
-      
+  
       // Update the actual audio node parameters
       if (audioNodesRef.current) {
         if (effectName === 'echo') {
-          if (paramName === 'delayTime') {
+          if (paramName === 'delayTime' && audioNodesRef.current.echoDelay) {
             audioNodesRef.current.echoDelay.delayTime.setValueAtTime(value, wavesurferRef.current.backend.ac.currentTime);
-          } else if (paramName === 'feedback') {
+          } else if (paramName === 'feedback' && audioNodesRef.current.echoFeedback) {
             audioNodesRef.current.echoFeedback.gain.value = value;
           }
-        } else if (effectName === 'distortion' && paramName === 'amount') {
+        } else if (effectName === 'distortion' && paramName === 'amount' && audioNodesRef.current.distortion) {
           audioNodesRef.current.distortion.curve = createDistortionCurve(value);
-        } else if (effectName === 'reverb' && paramName === 'decay') {
+        } else if (effectName === 'reverb' && paramName === 'decay' && audioNodesRef.current.reverb) {
           // Regenerate impulse response for new decay value
           if (wavesurferRef.current && wavesurferRef.current.backend.ac) {
             createReverbImpulse(
@@ -236,7 +361,7 @@ function Waveform() {
           }
         }
       }
-      
+  
       return newEffects;
     });
   };
