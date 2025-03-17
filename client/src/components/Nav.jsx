@@ -11,7 +11,7 @@ function Nav() {
   return (
     <nav className="main-nav">
       <div className="logo">
-        <Link to="/">SoundCraft Pro</Link>
+        <Link to="/">MUSAICA</Link>
       </div>
       
       <ul className="nav-links">
@@ -27,7 +27,7 @@ function Nav() {
       </ul>
       
       <div className="auth-buttons">
-        <button className="btn btn-outline">Login</button>
+        <button className="btn btn-outline wh">Login</button>
       </div>
     </nav>
   );

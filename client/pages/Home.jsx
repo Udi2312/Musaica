@@ -1,4 +1,3 @@
-// src/pages/Home.js
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -6,7 +5,7 @@ function Home() {
   const navigate = useNavigate();
 
   return (
-    <div className="home-page">
+    <div className="home-page dark-theme">
       <section className="hero">
         <h1>SoundCraft Pro</h1>
         <p>Your all-in-one audio engineering platform</p>
@@ -53,6 +52,43 @@ function Home() {
               <p>{feature.description}</p>
             </div>
           ))}
+        </div>
+      </section>
+      
+      <section className="advanced-features">
+        <h2>Production Tools</h2>
+        <div className="advanced-features-grid">
+          <div className="advanced-feature">
+            <div className="advanced-feature-icon">
+              <i className="fas fa-microphone-alt"></i>
+            </div>
+            <h3>Vocal & mixing tools</h3>
+            <p>Reverb, Distortion, EQ, Delay, Compressor, and more.</p>
+          </div>
+          
+          <div className="advanced-feature">
+            <div className="advanced-feature-icon">
+              <i className="fas fa-guitar"></i>
+            </div>
+            <h3>Virtual instruments</h3>
+            <p>Beatmaker, software synths, drum kits, and 808 with Glide sounds.</p>
+          </div>
+          
+          <div className="advanced-feature">
+            <div className="advanced-feature-icon">
+              <i className="fas fa-music"></i>
+            </div>
+            <h3>Royalty-free sounds</h3>
+            <p>Thousands of loops, samples, one-shots, and sound effects.</p>
+          </div>
+          
+          <div className="advanced-feature">
+            <div className="advanced-feature-icon">
+              <i className="fas fa-users"></i>
+            </div>
+            <h3>Collaborative studio</h3>
+            <p>Make music online anytime, with anyone, on any device.</p>
+          </div>
         </div>
       </section>
 
