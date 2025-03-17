@@ -597,3 +597,205 @@
         gap: 1.5rem;
         grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     }
+
+<<<<<<< HEAD
+    .side-panel {
+      width: 200px;
+      padding: 20px;
+      background-color: #f4f4f4;
+      border-right: 1px solid #ddd;
+    }
+    
+    .side-panel h3 {
+      margin-bottom: 20px;
+    }
+    
+    .side-panel .btn {
+      display: block;
+      width: 100%;
+      margin-bottom: 10px;
+    }
+=======
+   /* Dark theme styles - Add these to your existing main.css file */
+
+/* Home page dark theme */
+.home-page.dark-theme {
+  background: linear-gradient(135deg, #262529 0%, #1a1920 100%);
+  color: #ffffff;
+  padding-top: 0;
+}
+
+/* Hero section */
+.dark-theme .hero {
+  background: linear-gradient(to bottom, #262529 0%, #1e1d23 100%);
+  padding: 4rem 0;
+}
+
+.dark-theme .hero h1 {
+  color: #ffffff;
+  text-shadow: 0 0 10px rgba(37, 99, 235, 0.5);
+}
+
+.dark-theme .hero p {
+  color: #d1d5db;
+}
+
+/* Features section */
+.dark-theme .features h2 {
+  color: #ffffff;
+}
+
+.dark-theme .feature-card {
+  background: linear-gradient(145deg, #313035 0%, #252428 100%);
+  border: 1px solid #3a393f;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.dark-theme .feature-card:hover {
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.4);
+  transform: translateY(-5px);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background: linear-gradient(145deg, #343338 0%, #292830 100%);
+}
+
+.dark-theme .feature-card h3 {
+  color: #ffffff;
+}
+
+.dark-theme .feature-card p {
+  color: #d1d5db;
+}
+
+/* Quick start section */
+.dark-theme .quick-start {
+  background: linear-gradient(145deg, #313035 0%, #252428 100%);
+  border: 1px solid #3a393f;
+}
+
+.dark-theme .quick-start h2 {
+  color: #ffffff;
+}
+
+.dark-theme .quick-start p {
+  color: #d1d5db;
+}
+
+/* Button styles */
+.dark-theme .btn-outline {
+  border: 1px solid #4b5563;
+  color: #ffffff;
+  background: linear-gradient(145deg, #313035 0%, #252428 100%);
+}
+
+.dark-theme .btn-outline:hover {
+  background: linear-gradient(145deg, #343338 0%, #292830 100%);
+}
+
+/* Add subtle animation to the background */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Optional: Add this for a subtle animated background */
+.home-page.dark-theme {
+  background-size: 200% 200%;
+  animation: gradientShift 15s ease infinite;
+}
+
+/* Advanced Features Section - Add to your existing CSS */
+
+.advanced-features {
+  padding: 3rem 0;
+  text-align: center;
+}
+
+.advanced-features h2 {
+  margin-bottom: 2.5rem;
+}
+
+.advanced-features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.advanced-feature {
+  background: linear-gradient(145deg, #313035 0%, #252428 100%);
+  border: 1px solid #3a393f;
+  border-radius: 0.75rem;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.advanced-feature:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.4);
+  background: linear-gradient(145deg, #343338 0%, #292830 100%);
+}
+
+.advanced-feature-icon {
+  font-size: 2.5rem;
+  color: white;
+  margin-bottom: 1.5rem;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.advanced-feature h3 {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  color: #ffffff;
+}
+
+.advanced-feature p {
+  color: #d1d5db;
+  line-height: 1.6;
+}
+
+/* For dark theme compatibility */
+.dark-theme .advanced-feature {
+  background: linear-gradient(145deg, #313035 0%, #252428 100%);
+}
+
+.dark-theme .advanced-feature:hover {
+  background: linear-gradient(145deg, #343338 0%, #292830 100%);
+}
+
+.dark-theme .advanced-feature h3 {
+  color: #ffffff;
+}
+
+.dark-theme .advanced-feature p {
+  color: #d1d5db;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .advanced-features-grid {
+    gap: 1.5rem;
+  }
+  
+  .advanced-feature {
+    padding: 1.5rem 1rem;
+  }
+  
+  .advanced-feature-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+}
+>>>>>>> e705e25 (purvanshu commit)
